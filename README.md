@@ -2,9 +2,8 @@
 [![Compilation & tests](https://github.com/LedgerHQ/app-plugin-boilerplate/actions/workflows/build_and_functional_tests.yml/badge.svg?branch=develop)](https://github.com/LedgerHQ/app-plugin-boilerplate/actions/workflows/build_and_functional_tests.yml)
 
 
-# app-plugin-boilerplate
+# app-plugin-expand
 
-This repo is meant to be a forkable example of a plugin.
 
 Plugins are lightweight applications that go hand-in-hand with the Ethereum
 Application on a Nano (S, S plus, X) and Stax devices.
@@ -38,3 +37,7 @@ The documentation about the plugin shall be added in [PLUGIN_SPECIFICATON.md](ht
 ## Formatting
 
 The C source code is expected to be formatted with `clang-format` 11.0.0 or higher.
+
+
+pytest ./tests/ --tb=short -sv --device nanos
+pytest --device nanos tests/test_swap.py --golden_run -v
