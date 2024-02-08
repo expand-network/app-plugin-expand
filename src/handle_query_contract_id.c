@@ -24,7 +24,16 @@ void handle_query_contract_id(ethQueryContractID_t *msg) {
     } else if(context->selectorIndex == APPROVE) {
         strlcpy(msg->version, "Approve", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
+    } else if(context->selectorIndex == WRAP) {
+        PRINTF("settingWRAP");
+        strlcpy(msg->version, "Wrap", msg->versionLength);
+        msg->result = ETH_PLUGIN_RESULT_OK;
+    } else if(context->selectorIndex == UNWRAP) {
+        PRINTF("settingUNWRAP");
+        strlcpy(msg->version, "Unwrap", msg->versionLength);
+        msg->result = ETH_PLUGIN_RESULT_OK;
     }
+
     else {
         PRINTF("Selector index: %d not supported\n", context->selectorIndex);
         msg->result = ETH_PLUGIN_RESULT_ERROR;

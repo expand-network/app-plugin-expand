@@ -36,7 +36,9 @@
     X(SWAP_EXACT_ETH_FOR_TOKENS, 0x7ff36ab5)         \
     X(SWAP_EXACT_TOKENS_FOR_ETH, 0x18cbafe5)          \
     X(SWAP_EXACT_TOKENS_FOR_TOKENS, 0x38ed1739)        \
-    X(APPROVE, 0x095ea7b3)
+    X(APPROVE, 0x095ea7b3)                              \
+    X(WRAP, 0xd0e30db0 )                                 \
+    X(UNWRAP, 0x2e1a7d4d)                                 \
 
 // This enum will be automatically expanded to hold all selector names.
 // The value SELECTOR_COUNT can be used to get the number of defined selectors

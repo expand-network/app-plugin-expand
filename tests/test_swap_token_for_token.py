@@ -69,6 +69,7 @@ def test_swap_sushiswap(backend, firmware, navigator, test_name):
              "chainId": ChainId.ETH,
              "data": data
          }):
+        # return
     #     # Validate the on-screen request by performing the navigation appropriate for this device
         if firmware.device.startswith("nano"):
             navigator.navigate_until_text_and_compare(NavInsID.RIGHT_CLICK,

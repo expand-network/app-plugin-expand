@@ -4,8 +4,12 @@
 
 // Set UI for the "Send" screen.
 static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
+    
     strlcpy(msg->title, "Send", msg->titleLength);
-
+    if (context->selectorIndex == WRAP) 
+        strlcpy(msg->title, "Wrapping", msg->titleLength);
+    if (context->selectorIndex == UNWRAP) 
+        strlcpy(msg->title, "UNWrapping", msg->titleLength);
     const uint8_t *token_amount;
     uint8_t token_amount_size;
     // char *ticker;
@@ -15,8 +19,9 @@ static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
     switch (context->selectorIndex) {
 
         case SWAP_EXACT_ETH_FOR_TOKENS:
+        case WRAP:
             //  token_amount = msg->pluginSharedRO->txContent->value.value;
-             copy_parameter(context->amount_sent,
+            copy_parameter(context->amount_sent,
                             msg->pluginSharedRO->txContent->value.value,
                             msg->pluginSharedRO->txContent->value.length);
              token_amount_size = msg->pluginSharedRO->txContent->value.length;
@@ -34,7 +39,15 @@ static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
             //  token_amount = context->amount_sent;
              token_amount_size = sizeof(context->amount_sent);
              decimals =  get_decimals_for_ticker(context->ticker_sent);
-             break;
+             PRINTF("decimals %d \n", decimals);
+             break; 
+        case UNWRAP:
+            strlcpy(context->ticker_sent,
+                    "WETH",
+                    sizeof(context->ticker_sent));
+            token_amount_size = sizeof(context->amount_sent);
+            decimals = WEI_TO_ETHER;
+            break;           
         default:
              PRINTF("Unhandled selector Index: %d\n", context->selectorIndex);
              msg->result = ETH_PLUGIN_RESULT_ERROR;
@@ -70,8 +83,8 @@ static bool set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) 
                         sizeof(context->ticker_received));
              printf_hex_array("TOKEN RECEIVED: ", ADDRESS_LENGTH, context->token_received);
              decimals =  get_decimals_for_ticker(context->ticker_received);
-            //  PRINTF("DECIMALS RECEIVED: %d\n", decimals);
-            //  PRINTF("ticker_received : %s\n", context->ticker_received);
+             PRINTF("DECIMALS RECEIVED: %d\n", decimals);
+             PRINTF("ticker_received : %s\n", context->ticker_received);
              break;
         case SWAP_EXACT_TOKENS_FOR_ETH:
         case SWAP_EXACT_TOKENS_FOR_TOKENS:
@@ -184,6 +197,51 @@ static bool set_approve_amount(ethQueryContractUI_t *msg, context_t *context) {
 }
 
 
+static bool set_wrap_unwrap_ui(ethQueryContractUI_t *msg, context_t *context) {
+    
+    const decimals = WEI_TO_ETHER;
+    const uint8_t *token_amount;
+    uint8_t token_amount_size;
+                 
+    switch(context->selectorIndex) {
+        case WRAP:
+             strlcpy(msg->title, "Recieving", msg->titleLength);
+             copy_parameter(context->amount_received,
+                            msg->pluginSharedRO->txContent->value.value,
+                            msg->pluginSharedRO->txContent->value.length);
+             token_amount_size = msg->pluginSharedRO->txContent->value.length;
+             strlcpy(context->ticker_received,
+                    "WETH",
+                    sizeof(context->ticker_sent));
+             break;
+        case UNWRAP:
+             strlcpy(msg->title, "Recieving", msg->titleLength);
+             copy_parameter(context->amount_received,
+                            context->amount_sent,
+                            sizeof(context->amount_sent));
+             token_amount_size = sizeof(context->amount_sent);
+             strlcpy(context->ticker_received,
+                    "WETH",
+                    sizeof(context->ticker_sent));
+             break;
+         default: 
+             PRINTF("Unhandled selector Index: %d\n", context->selectorIndex);
+             msg->result = ETH_PLUGIN_RESULT_ERROR;
+             return false;
+    }
+
+
+
+    return amountToString(context->amount_received,
+                          token_amount_size,
+                          decimals,
+                          context->ticker_received,
+                          msg->msg,
+                          msg->msgLength);
+    
+}
+
+
 void handle_query_contract_ui(ethQueryContractUI_t *msg) {
     context_t *context = (context_t *) msg->pluginContext;
     bool ret = false;
@@ -212,7 +270,11 @@ void handle_query_contract_ui(ethQueryContractUI_t *msg) {
             if(context->selectorIndex == APPROVE ) {
                 PRINTF("executing set apr amount");
                 ret = set_approve_amount(msg, context);
-            } else {
+            } else if(context->selectorIndex == WRAP || context->selectorIndex == UNWRAP ) {
+                ret = set_wrap_unwrap_ui(msg, context);
+            }
+            else {
+                PRINTF("executing set rec");
                 ret = set_receive_ui(msg, context);
             }
             break;
@@ -221,6 +283,7 @@ void handle_query_contract_ui(ethQueryContractUI_t *msg) {
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
+            break;
     }
     msg->result = ret ? ETH_PLUGIN_RESULT_OK : ETH_PLUGIN_RESULT_ERROR;
 }

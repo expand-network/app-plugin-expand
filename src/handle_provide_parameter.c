@@ -13,6 +13,7 @@ static void handle_swap_exact_eth_for_tokens(ethPluginProvideParameter_t *msg, c
             copy_parameter(context->amount_received,
                            msg->parameter,
                            sizeof(context->amount_received));
+            printf_hex_array("amount_rec: ", ADDRESS_LENGTH, context->amount_received);
             context->next_param = PATH_OFFSET;
             break;
         case PATH_OFFSET:  // path
@@ -114,6 +115,22 @@ static void handle_approve_erc20 (ethPluginProvideParameter_t *msg, context_t *c
     }
 }
 
+static void handle_wrap_unwrap_WETH (ethPluginProvideParameter_t *msg, context_t *context) {
+
+    switch(context->next_param) {
+        case AMOUNT_SENT:
+            copy_parameter(context->amount_sent, msg->parameter, sizeof(context->amount_sent));
+            printf_hex_array("AMOUNT_SENT:", ADDRESS_LENGTH, msg->parameter);
+            PRINTF("amount wrap..%d\n", context->amount_sent);
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
     context_t *context = (context_t *) msg->pluginContext;
     // We use `%.*H`: it's a utility function to print bytes. You first give
@@ -130,6 +147,7 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
         context->skip--;
         return;
     }
+    PRINTF("RUNNIG PROVIDE PARAM %d\n", context->selectorIndex);
 
     // EDIT THIS: adapt the cases and the names of the functions.
     switch (context->selectorIndex) {
@@ -143,6 +161,10 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
         case APPROVE:
             PRINTF("Running Approve\n");
             handle_approve_erc20(msg, context);
+            break;
+        case UNWRAP:
+            PRINTF("Running UnWrap.....\n");
+            handle_wrap_unwrap_WETH(msg, context);
             break;
         default:
             PRINTF("Selector Index not supported: %d\n", context->selectorIndex);

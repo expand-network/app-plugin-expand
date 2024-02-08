@@ -46,10 +46,14 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
             break;
         case SWAP_EXACT_TOKENS_FOR_ETH:
         case SWAP_EXACT_TOKENS_FOR_TOKENS:
+        case UNWRAP:
             context->next_param = AMOUNT_SENT;
             break;
         case APPROVE:
             context->next_param = BENEFICIARY;
+            break;
+        case WRAP:
+            context->next_param = UNEXPECTED_PARAMETER;
             break;
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
