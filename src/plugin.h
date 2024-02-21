@@ -128,6 +128,7 @@ extern const uint8_t CURVE_OUSD_POOL_ADDRESS[ADDRESS_LENGTH];
 #define ADDRESS_IS_NETWORK_TOKEN(_addr)                  \
     !memcmp(_addr, NULL_ETH_ADDRESS, ADDRESS_LENGTH) 
 #define ADDRESS_IS_WETH(_addr)   (!memcmp(_addr, WETH_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_OETH(_addr)   (!memcmp(_addr, OETH_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_STETH(_addr)  (!memcmp(_addr, STETH_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_RETH(_addr)   (!memcmp(_addr, RETH_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_FRXETH(_addr) (!memcmp(_addr, FRXETH_ADDRESS, ADDRESS_LENGTH))
@@ -152,8 +153,9 @@ static inline const char *get_ticker_for_address(uint8_t address[ADDRESS_LENGTH]
     } else if (ADDRESS_IS_DAI(address)) {
         return DAI_TICKER; 
     } else if (ADDRESS_IS_USDC(address)) {
+        PRINTF("returning usdc");
         return USDC_TICKER;
-    }
+    } 
 }
 
 static inline void printf_hex_array(const char *title __attribute__((unused)),

@@ -1,7 +1,6 @@
 #include "plugin_utils.h"
 #include "plugin.h"
 
-// Called once to init.
 void handle_init_contract(ethPluginInitContract_t *msg) {
     PRINTF("Expand pulgin handle_init_contract");
     // Make sure we are running a compatible version.

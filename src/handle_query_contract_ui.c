@@ -48,6 +48,21 @@ static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
             token_amount_size = sizeof(context->amount_sent);
             decimals = WEI_TO_ETHER;
             break;
+        case CURVE_EXCHANGE:
+            strlcpy(context->ticker_sent, 
+                    get_ticker_for_address(context->token_sent),
+                    sizeof(context->ticker_sent));
+            // if(strcmp(context->ticker_sent, ETH_TICKER) == 0) {
+            //     copy_parameter(context->amount_sent,
+            //                 msg->pluginSharedRO->txContent->value.value,
+            //                 msg->pluginSharedRO->txContent->value.length);
+            //     token_amount_size = msg->pluginSharedRO->txContent->value.length;
+            // } else {
+
+            // }
+            token_amount_size = sizeof(context->amount_sent);
+            decimals =  get_decimals_for_ticker(context->ticker_sent);
+            break;
         default:
              PRINTF("Unhandled selector Index: %d\n", context->selectorIndex);
              msg->result = ETH_PLUGIN_RESULT_ERROR;
@@ -105,6 +120,12 @@ static bool set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) 
                 PRINTF("TICKER REC: %s %d \n",get_ticker_for_address(context->token_received),decimals);
             }
              break;
+        case CURVE_EXCHANGE:
+            strlcpy(context->ticker_received, 
+                    get_ticker_for_address(context->token_received), 
+                    sizeof(context->ticker_received));
+            decimals = get_decimals_for_ticker(context->ticker_received);
+            break;
         default: 
              PRINTF("Unhandled selector Index: %d\n", context->selectorIndex);
              msg->result = ETH_PLUGIN_RESULT_ERROR;

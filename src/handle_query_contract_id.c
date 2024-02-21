@@ -11,13 +11,15 @@ void handle_query_contract_id(ethQueryContractID_t *msg) {
 
 
     // EDIT THIS: Adapt the cases by modifying the strings you pass to `strlcpy`.
-    if (context->selectorIndex == SWAP_EXACT_ETH_FOR_TOKENS) {
+    if (context->selectorIndex == SWAP_EXACT_ETH_FOR_TOKENS || context->selectorIndex == SWAP_EXACT_TOKENS_FOR_ETH) {
         strlcpy(msg->version, "Swap", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
-    } else if (context->selectorIndex == SWAP_EXACT_TOKENS_FOR_ETH) {
-        strlcpy(msg->version, "Swap", msg->versionLength);
-        msg->result = ETH_PLUGIN_RESULT_OK;
-    }  else if (context->selectorIndex == SWAP_EXACT_TOKENS_FOR_TOKENS) {
+    } 
+    // else if (context->selectorIndex == SWAP_EXACT_TOKENS_FOR_ETH) {
+    //     strlcpy(msg->version, "Swap", msg->versionLength);
+    //     msg->result = ETH_PLUGIN_RESULT_OK;
+    // }  
+    else if (context->selectorIndex == SWAP_EXACT_TOKENS_FOR_TOKENS) {
         strlcpy(msg->version, "Swap", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
     } else if(context->selectorIndex == APPROVE) {
