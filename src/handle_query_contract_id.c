@@ -9,7 +9,6 @@ void handle_query_contract_id(ethQueryContractID_t *msg) {
     // For the first screen, display the plugin name.
     strlcpy(msg->name, APPNAME, msg->nameLength);
 
-    PRINTF("SELEC: %d", context->selectorIndex);
 
     // EDIT THIS: Adapt the cases by modifying the strings you pass to `strlcpy`.
     if (context->selectorIndex == SWAP_EXACT_ETH_FOR_TOKENS) {
@@ -25,12 +24,13 @@ void handle_query_contract_id(ethQueryContractID_t *msg) {
         strlcpy(msg->version, "Approve", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
     } else if(context->selectorIndex == WRAP) {
-        PRINTF("settingWRAP");
         strlcpy(msg->version, "Wrap", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
     } else if(context->selectorIndex == UNWRAP) {
-        PRINTF("settingUNWRAP");
         strlcpy(msg->version, "Unwrap", msg->versionLength);
+        msg->result = ETH_PLUGIN_RESULT_OK;
+    } else if(context->selectorIndex == CURVE_EXCHANGE) {
+        strlcpy(msg->version, "Swap", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
     }
 

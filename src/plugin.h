@@ -28,7 +28,7 @@
 
 
 // All possible selectors of your plugin.
-// EDIT THIS: Enter your selectors here, in the format X(NAME, value)
+// Enter your selectors here, in the format X(NAME, value)
 // A Xmacro below will create for you:
 //     - an enum named selector_t with every NAME
 //     - a map named SELECTORS associating each NAME with it's value
@@ -39,6 +39,8 @@
     X(APPROVE, 0x095ea7b3)                              \
     X(WRAP, 0xd0e30db0 )                                 \
     X(UNWRAP, 0x2e1a7d4d)                                 \
+    X(CURVE_EXCHANGE, 0x3df02124)                          \
+    X(BATCH_SWAP, 0x945bcec9)                               \
 
 // This enum will be automatically expanded to hold all selector names.
 // The value SELECTOR_COUNT can be used to get the number of defined selectors
@@ -118,6 +120,9 @@ extern const uint8_t OUSD_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t DAI_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t USDC_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t USDT_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t CURVE_OETH_POOL_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t CURVE_OUSD_POOL_ADDRESS[ADDRESS_LENGTH];
+
 
 
 #define ADDRESS_IS_NETWORK_TOKEN(_addr)                  \

@@ -2,54 +2,62 @@
 # import json
 # import os
 # import datetime
+# import time
 # from web3 import Web3
 # from eth_typing import ChainId
-# from ledger_app_clients.ethereum.client import EthAppClient
+# from ledger_app_clients.ethereum.client import EthAppClient, StatusWord
 # from ledger_app_clients.ethereum.utils import get_selector_from_data
 # from ragger.navigator import NavInsID
 # from .utils import get_appname_from_makefile
+
 
 # ROOT_SCREENSHOT_PATH = Path(__file__).parent
 # ABIS_FOLDER = "%s/abis" % (os.path.dirname(__file__))
 # PLUGIN_NAME = get_appname_from_makefile()
 
-# with open ("%s/0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D.abi.json" % (ABIS_FOLDER)) as file:
+# with open("%s/0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D.abi.json" % (ABIS_FOLDER)) as file:
 #     contract = Web3().eth.contract(
-#         abi= json.load(file),
-#         address=bytes.fromhex("10ED43C718714eb63d5aA57B78B54704E256024E")
+#         abi=json.load(file),
+#         # Get address from filename
+#         address=bytes.fromhex(os.path.basename(file.name).split(".")[0].split("x")[-1])
 #     )
 
-# def test_swap_pancake(backend, firmware, navigator, test_name):
+# # EDIT THIS: build your own test
+# def test_swap_exact_token_for_eth1(backend, firmware, navigator, test_name):
 #     client = EthAppClient(backend)
+#     # print(client)
 
-#     data = contract.encodeABI("swapExactTokensForTokens"
-#     , [
-#         40000000,
-#         1000000000000,
+#     data = contract.encodeABI("swapExactTokensForETH", [
+#         600000000000,
+#         300000000000000000,
 #         [
-#             bytes.fromhex("55d398326f99059fF775485246999027B3197955"),
-#             bytes.fromhex("cD1B51b87a8a7137D6421bA5A976225187a26777")
+#             bytes.fromhex("A0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"),
+#             bytes.fromhex("C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2")
+
 #         ],
 #         bytes.fromhex("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045"),
-#         int(datetime.datetime(2025,12,25,0,0).timestamp())
+#         int(datetime.datetime(2025, 12, 25, 0, 0).timestamp())
 #     ])
-#     print("data: ", data)
 
+#     # first setup the external plugin
 #     with client.set_external_plugin(PLUGIN_NAME,
 #                                     contract.address,
+#                                     # Extract function selector from the encoded data
 #                                     get_selector_from_data(data)):
 #         pass
 
+#     # send the transaction
 #     with client.sign("m/44'/60'/1'/0/0", {
-#         "nonce": 24,
-#         "maxFeePerGas": Web3.to_wei(1.5, "gwei"),
-#         "maxPriorityFeePerGas": Web3.to_wei(1.5, "gwei"),
-#         "gas": 173290,
-#         "to": contract.address,
-#         "value": Web3.to_wei(0, "ether"),
-#         "chainId": ChainId.BNB,
-#         "data": data
-#     }):
+#              "nonce": 21,
+#              "maxFeePerGas": Web3.to_wei(145, "gwei"),
+#              "maxPriorityFeePerGas": Web3.to_wei(1.5, "gwei"),
+#              "gas": 173290,
+#              "to": contract.address,
+#              "value": Web3.to_wei(1, "ether"),
+#              "chainId": ChainId.ETH,
+#              "data": data
+#          }):
+#     #     # Validate the on-screen request by performing the navigation appropriate for this device
 #         if firmware.device.startswith("nano"):
 #             navigator.navigate_until_text_and_compare(NavInsID.RIGHT_CLICK,
 #                                                       [NavInsID.BOTH_CLICK],
@@ -62,6 +70,6 @@
 #                                                        NavInsID.USE_CASE_STATUS_DISMISS],
 #                                                       "Hold to sign",
 #                                                       ROOT_SCREENSHOT_PATH,
-#                                                         test_name)
+#                                                       test_name)
+            
 
-                                                    

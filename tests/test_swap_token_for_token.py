@@ -29,7 +29,7 @@ def test_swap_sushiswap(backend, firmware, navigator, test_name):
     client = EthAppClient(backend)
 
     data = contract.encodeABI("swapExactTokensForTokens", [
-        400000000,
+        400000000000000000000,
         100000000000000000000,
         [
             bytes.fromhex("A0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"),

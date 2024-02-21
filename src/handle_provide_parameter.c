@@ -131,6 +131,118 @@ static void handle_wrap_unwrap_WETH (ethPluginProvideParameter_t *msg, context_t
     }
 }
 
+static void handle_token_sent_curve_pool(ethPluginProvideParameter_t *msg, context_t *context) {
+    memset(context->token_sent, 0, sizeof(context->token_sent));
+
+    bool is_oeth = memcmp(CURVE_OETH_POOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+
+    if (is_oeth) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                memcpy(context->token_sent, NULL_ETH_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_sent, OETH_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    } else {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                memcpy(context->token_sent, OUSD_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_sent, DAI_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 2:
+                memcpy(context->token_sent, USDC_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 3:
+                memcpy(context->token_sent, USDT_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    }
+
+    printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->token_sent);
+}
+
+static void handle_token_received_curve_pool(ethPluginProvideParameter_t *msg, context_t *context) {
+    memset(context->token_received, 0, sizeof(context->token_received));
+
+    bool is_oeth = memcmp(CURVE_OETH_POOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+
+    // determine token addresses of curve pools based on contract address and
+    // value of i/j params
+    if (is_oeth) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                memcpy(context->token_received, NULL_ETH_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_received, OETH_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    } else {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                memcpy(context->token_received, OUSD_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_received, DAI_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 2:
+                memcpy(context->token_received, USDC_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 3:
+                memcpy(context->token_received, USDT_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    }
+    printf_hex_array("TOKEN RECEIVED: ", ADDRESS_LENGTH, context->token_received);
+}
+
+
+
+static void handle_curve_swap(ethPluginProvideParameter_t *msg, context_t *context) {
+    switch (context->next_param) {
+        case TOKEN_SENT:
+            handle_token_sent_curve_pool(msg, context);
+            context->next_param = TOKEN_RECEIVED;
+            break;
+        case TOKEN_RECEIVED:
+            handle_token_received_curve_pool(msg, context);
+            context->next_param = AMOUNT_SENT;
+            break;
+        case AMOUNT_SENT:
+            memcpy(context->amount_sent, msg->parameter, INT256_LENGTH);
+            context->next_param = MIN_AMOUNT_RECEIVED;
+            break;
+        case MIN_AMOUNT_RECEIVED:
+            memcpy(context->amount_received, msg->parameter, PARAMETER_LENGTH);
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
     context_t *context = (context_t *) msg->pluginContext;
     // We use `%.*H`: it's a utility function to print bytes. You first give
@@ -165,6 +277,13 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
         case UNWRAP:
             PRINTF("Running UnWrap.....\n");
             handle_wrap_unwrap_WETH(msg, context);
+            break;
+        case CURVE_EXCHANGE:
+            PRINTF("Running Curve....\n");
+            handle_curve_swap(msg, context);
+            break;
+        case BATCH_SWAP:
+            PRINTF("Running Balancer.....");
             break;
         default:
             PRINTF("Selector Index not supported: %d\n", context->selectorIndex);

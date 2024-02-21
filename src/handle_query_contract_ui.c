@@ -9,7 +9,7 @@ static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
     if (context->selectorIndex == WRAP) 
         strlcpy(msg->title, "Wrapping", msg->titleLength);
     if (context->selectorIndex == UNWRAP) 
-        strlcpy(msg->title, "UNWrapping", msg->titleLength);
+        strlcpy(msg->title, "Unwrap", msg->titleLength);
     const uint8_t *token_amount;
     uint8_t token_amount_size;
     // char *ticker;
@@ -20,16 +20,16 @@ static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
 
         case SWAP_EXACT_ETH_FOR_TOKENS:
         case WRAP:
-            //  token_amount = msg->pluginSharedRO->txContent->value.value;
+            // token_amount = msg->pluginSharedRO->txContent->value.value;
             copy_parameter(context->amount_sent,
                             msg->pluginSharedRO->txContent->value.value,
                             msg->pluginSharedRO->txContent->value.length);
-             token_amount_size = msg->pluginSharedRO->txContent->value.length;
-             strlcpy(context->ticker_sent,
+            token_amount_size = msg->pluginSharedRO->txContent->value.length;
+            strlcpy(context->ticker_sent,
                     "ETH",
                     sizeof(context->ticker_sent));
-             decimals = WEI_TO_ETHER;
-             break;
+            decimals = WEI_TO_ETHER;
+            break;
         case SWAP_EXACT_TOKENS_FOR_ETH:
         case SWAP_EXACT_TOKENS_FOR_TOKENS:
              strlcpy(context->ticker_sent, 
@@ -37,17 +37,17 @@ static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
                      sizeof(context->ticker_sent));
              printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->token_sent);
             //  token_amount = context->amount_sent;
-             token_amount_size = sizeof(context->amount_sent);
+             token_amount_size = msg->pluginSharedRO->txContent->value.length;
              decimals =  get_decimals_for_ticker(context->ticker_sent);
              PRINTF("decimals %d \n", decimals);
              break; 
         case UNWRAP:
             strlcpy(context->ticker_sent,
-                    "WETH",
+                    "ETH",
                     sizeof(context->ticker_sent));
             token_amount_size = sizeof(context->amount_sent);
             decimals = WEI_TO_ETHER;
-            break;           
+            break;
         default:
              PRINTF("Unhandled selector Index: %d\n", context->selectorIndex);
              msg->result = ETH_PLUGIN_RESULT_ERROR;

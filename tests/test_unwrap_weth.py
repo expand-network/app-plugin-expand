@@ -22,7 +22,7 @@ def test_unwrap_eth(backend, firmware, navigator, test_name):
     client = EthAppClient(backend)
 
     data = contract.encodeABI("withdraw",[
-        1960129819999582
+        10000000000000
     ])
 
     print(data)
@@ -44,7 +44,7 @@ def test_unwrap_eth(backend, firmware, navigator, test_name):
         "chainId": ChainId.ETH,
         "data": data
     }):
-        return
+        # return
         if firmware.device.startswith("nano"):
             navigator.navigate_until_text_and_compare(NavInsID.RIGHT_CLICK,
                                                       [NavInsID.BOTH_CLICK],
