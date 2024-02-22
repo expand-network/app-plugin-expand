@@ -133,16 +133,18 @@ static void handle_wrap_unwrap_WETH (ethPluginProvideParameter_t *msg, context_t
 
 static void handle_token_sent_curve_pool(ethPluginProvideParameter_t *msg, context_t *context) {
     memset(context->token_sent, 0, sizeof(context->token_sent));
-    PRINTF("inside handle");
+    PRINTF("\n inside handle \n");
 
     bool is_oeth = memcmp(CURVE_OETH_POOL_ADDRESS,
                           msg->pluginSharedRO->txContent->destination,
-                          ADDRESS_LENGTH) == 0;
-    PRINTF("Its is_oeth: %s\n", is_oeth);
+                          ADDRESS_LENGTH) == 0;    
+    // bool is_oeth = true;
+    PRINTF("\n Its is_oeth: \n");
 
     if (is_oeth) {
         switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
             case 0:
+                // printf_hex_array()
                 memcpy(context->token_sent, NULL_ETH_ADDRESS, ADDRESS_LENGTH);
                 break;
             case 1:
@@ -172,7 +174,7 @@ static void handle_token_sent_curve_pool(ethPluginProvideParameter_t *msg, conte
         }
     }
 
-    printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->token_sent);
+    printf_hex_array("TOKEN SENT:__ ", ADDRESS_LENGTH, context->token_sent);
 }
 
 static void handle_token_received_curve_pool(ethPluginProvideParameter_t *msg, context_t *context) {
@@ -181,7 +183,7 @@ static void handle_token_received_curve_pool(ethPluginProvideParameter_t *msg, c
     bool is_oeth = memcmp(CURVE_OETH_POOL_ADDRESS,
                           msg->pluginSharedRO->txContent->destination,
                           ADDRESS_LENGTH) == 0;
-
+    PRINTF("Inside rec\n");
     // determine token addresses of curve pools based on contract address and
     // value of i/j params
     if (is_oeth) {
@@ -221,12 +223,12 @@ static void handle_token_received_curve_pool(ethPluginProvideParameter_t *msg, c
 
 
 static void handle_curve_swap(ethPluginProvideParameter_t *msg, context_t *context) {
-    PRINTF("Inside curve swap");
+    PRINTF("\n Inside curve swap \n");
     switch (context->next_param) {
         case TOKEN_SENT:
-            PRINTF("Inside TOKEN_SENT");
+            PRINTF("Inside TOKEN_SENT\n");
             handle_token_sent_curve_pool(msg, context);
-            context->next_param = UNEXPECTED_PARAMETER;
+            context->next_param = TOKEN_RECEIVED;
             break;
         case TOKEN_RECEIVED:
             handle_token_received_curve_pool(msg, context);
@@ -268,6 +270,8 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
         return;
     }
     PRINTF("RUNNIG PROVIDE PARAM %d\n", context->selectorIndex);
+    PRINTF("U2B....%d\n", U2BE(msg->parameter, PARAMETER_LENGTH - 2));
+    printf_hex_array("destination: ", ADDRESS_LENGTH, msg->pluginSharedRO->txContent->destination);
 
     // EDIT THIS: adapt the cases and the names of the functions.
     switch (context->selectorIndex) {

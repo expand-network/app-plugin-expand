@@ -24,8 +24,8 @@ def test_curve_exchange_oeth(backend, firmware, navigator, test_name):
     data = contract.encodeABI("exchange",[
         0,
         1,
-        Web3.to_wei(1, "ether"),
-        Web3.to_wei(0, "ether")
+        Web3.to_wei(5, "ether"),
+        Web3.to_wei(3, "ether")
     ])
     print(data)
     print(get_selector_from_data(data))

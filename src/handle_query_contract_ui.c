@@ -49,6 +49,7 @@ static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
             decimals = WEI_TO_ETHER;
             break;
         case CURVE_EXCHANGE:
+            printf_hex_array("token_sent:1 ", ADDRESS_LENGTH, context->token_sent);
             strlcpy(context->ticker_sent, 
                     get_ticker_for_address(context->token_sent),
                     sizeof(context->ticker_sent));

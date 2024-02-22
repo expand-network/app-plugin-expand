@@ -11,7 +11,7 @@ void handle_finalize(ethPluginFinalize_t *msg) {
         msg->numScreens += 1;
     }
 
-    if (context->selectorIndex == WRAP || context->selectorIndex == UNWRAP ) {
+    if (context->selectorIndex == WRAP || context->selectorIndex == UNWRAP || context->selectorIndex == CURVE_EXCHANGE) {
         msg->numScreens -= 1;
     }
 

@@ -103,6 +103,8 @@ typedef struct context_s {
 
 #define ETH_TICKER "ETH"
 #define WETH_TICKER "WETH"
+#define OETH_TICKER   "OETH"
+
 
 #define DAI_TICKER "DAI"
 #define DAI_DECIMALS WEI_TO_ETHER
@@ -122,13 +124,16 @@ extern const uint8_t USDC_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t USDT_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t CURVE_OETH_POOL_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t CURVE_OUSD_POOL_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t CURVE_POOL_ETH_ADDRESS[ADDRESS_LENGTH];
+
 
 
 
 #define ADDRESS_IS_NETWORK_TOKEN(_addr)                  \
-    !memcmp(_addr, NULL_ETH_ADDRESS, ADDRESS_LENGTH) 
-#define ADDRESS_IS_WETH(_addr)   (!memcmp(_addr, WETH_ADDRESS, ADDRESS_LENGTH))
+    (!memcmp(_addr, NULL_ETH_ADDRESS, ADDRESS_LENGTH) || \
+     !memcmp(_addr, CURVE_POOL_ETH_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_OETH(_addr)   (!memcmp(_addr, OETH_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_WETH(_addr)   (!memcmp(_addr, WETH_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_STETH(_addr)  (!memcmp(_addr, STETH_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_RETH(_addr)   (!memcmp(_addr, RETH_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_FRXETH(_addr) (!memcmp(_addr, FRXETH_ADDRESS, ADDRESS_LENGTH))
@@ -138,24 +143,24 @@ extern const uint8_t CURVE_OUSD_POOL_ADDRESS[ADDRESS_LENGTH];
 #define ADDRESS_IS_USDT(_addr)   (!memcmp(_addr, USDT_ADDRESS, ADDRESS_LENGTH))
 
 
-
-
 // Check if the context structure will fit in the RAM section ETH will prepare for us
 // Do not remove!
 ASSERT_SIZEOF_PLUGIN_CONTEXT(context_t);
 
 
 static inline const char *get_ticker_for_address(uint8_t address[ADDRESS_LENGTH]) {
-    if(ADDRESS_IS_NETWORK_TOKEN(address)) {
+    if(ADDRESS_IS_NETWORK_TOKEN(address) ) {
         return ETH_TICKER;
     } else if (ADDRESS_IS_WETH(address)) {
         return WETH_TICKER;
     } else if (ADDRESS_IS_DAI(address)) {
         return DAI_TICKER; 
     } else if (ADDRESS_IS_USDC(address)) {
-        PRINTF("returning usdc");
+        PRINTF("returning usdc123");
         return USDC_TICKER;
-    } 
+    } else if (ADDRESS_IS_OETH(address)) {
+        return OETH_TICKER;
+    }
 }
 
 static inline void printf_hex_array(const char *title __attribute__((unused)),
@@ -176,6 +181,6 @@ static inline const uint8_t get_decimals_for_ticker(const char *ticker __attribu
     } else if(strcmp(ticker, DAI_TICKER) == 0) {
         return WEI_TO_ETHER;
     } else {
-        return WETH_TICKER;
+        return WEI_TO_ETHER;
     }
 }
