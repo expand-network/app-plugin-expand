@@ -22,16 +22,11 @@
 
 
 // Xmacro helpers to define the enum and map
-// Do not modify !
 #define TO_ENUM(selector_name, selector_id)  selector_name,
 #define TO_VALUE(selector_name, selector_id) selector_id,
 
 
-// All possible selectors of your plugin.
-// Enter your selectors here, in the format X(NAME, value)
-// A Xmacro below will create for you:
-//     - an enum named selector_t with every NAME
-//     - a map named SELECTORS associating each NAME with it's value
+// All possible selectors of plugin.
 #define SELECTORS_LIST(X)                           \
     X(SWAP_EXACT_ETH_FOR_TOKENS, 0x7ff36ab5)         \
     X(SWAP_EXACT_TOKENS_FOR_ETH, 0x18cbafe5)          \
@@ -41,16 +36,14 @@
     X(UNWRAP, 0x2e1a7d4d)                                 \
     X(CURVE_EXCHANGE, 0x3df02124)                          \
     X(BATCH_SWAP, 0x945bcec9)                               \
+    X(TRANSFER, 0xa9059cbb)                                  \
 
 // This enum will be automatically expanded to hold all selector names.
-// The value SELECTOR_COUNT can be used to get the number of defined selectors
-// Do not modify !
 typedef enum selector_e {
     SELECTORS_LIST(TO_ENUM) SELECTOR_COUNT,
 } selector_t;
 
 // This array will be automatically expanded to map all selector_t names with the correct value.
-// Do not modify !
 extern const uint32_t SELECTORS[SELECTOR_COUNT];
 
 // Enumeration used to parse the smart contract data.
@@ -65,10 +58,8 @@ typedef enum {
     UNEXPECTED_PARAMETER,
 } parameter;
 
-// Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
-// will need to adapt this struct to your plugin.
+// Shared global memory with Ethereum app
 typedef struct context_s {
-    // For display.
     uint8_t amount_sent[INT256_LENGTH];
     uint8_t amount_received[INT256_LENGTH];
     uint8_t beneficiary[ADDRESS_LENGTH];
@@ -84,20 +75,15 @@ typedef struct context_s {
 
 
 
-    // For parsing data.
     uint8_t next_param;  // Set to be the next param we expect to parse.
     uint16_t offset;     // Offset at which the array or struct starts.
     bool go_to_offset;   // If set, will force the parsing to iterate through parameters until
                          // `offset` is reached.
 
-    // For both parsing and display.
     selector_t selectorIndex;
 } context_t;
 
 
-
-// #define TOKEN_SENT_FOUND     1
-// #define TOKEN_RECEIVED_FOUND 1 << 1
 
 #define DEFAULT_TICKER ""
 
@@ -143,8 +129,7 @@ extern const uint8_t CURVE_POOL_ETH_ADDRESS[ADDRESS_LENGTH];
 #define ADDRESS_IS_USDT(_addr)   (!memcmp(_addr, USDT_ADDRESS, ADDRESS_LENGTH))
 
 
-// Check if the context structure will fit in the RAM section ETH will prepare for us
-// Do not remove!
+// Check if the context structure will fit in the RAM
 ASSERT_SIZEOF_PLUGIN_CONTEXT(context_t);
 
 
@@ -156,10 +141,11 @@ static inline const char *get_ticker_for_address(uint8_t address[ADDRESS_LENGTH]
     } else if (ADDRESS_IS_DAI(address)) {
         return DAI_TICKER; 
     } else if (ADDRESS_IS_USDC(address)) {
-        PRINTF("returning usdc123");
         return USDC_TICKER;
     } else if (ADDRESS_IS_OETH(address)) {
         return OETH_TICKER;
+    } else {
+        return USDC_TICKER;
     }
 }
 
