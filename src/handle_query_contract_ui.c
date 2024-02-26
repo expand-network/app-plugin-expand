@@ -35,7 +35,7 @@ static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
              strlcpy(context->ticker_sent, 
                      get_ticker_for_address(context->token_sent), 
                      sizeof(context->ticker_sent));
-             printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->token_sent);
+            //  printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->token_sent);
             //  token_amount = context->amount_sent;
              token_amount_size = msg->pluginSharedRO->txContent->value.length;
              decimals =  get_decimals_for_ticker(context->ticker_sent);
@@ -49,7 +49,7 @@ static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
             decimals = WEI_TO_ETHER;
             break;
         case CURVE_EXCHANGE:
-            printf_hex_array("token_sent:1 ", ADDRESS_LENGTH, context->token_sent);
+            // printf_hex_array("token_sent:1 ", ADDRESS_LENGTH, context->token_sent);
             strlcpy(context->ticker_sent, 
                     get_ticker_for_address(context->token_sent),
                     sizeof(context->ticker_sent));
@@ -97,7 +97,7 @@ static bool set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) 
              strlcpy(context->ticker_received, 
                     get_ticker_for_address(context->token_received), 
                         sizeof(context->ticker_received));
-             printf_hex_array("TOKEN RECEIVED: ", ADDRESS_LENGTH, context->token_received);
+            //  printf_hex_array("TOKEN RECEIVED: ", ADDRESS_LENGTH, context->token_received);
              decimals =  get_decimals_for_ticker(context->ticker_received);
              PRINTF("DECIMALS RECEIVED: %d\n", decimals);
              PRINTF("ticker_received : %s\n", context->ticker_received);
@@ -115,7 +115,7 @@ static bool set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) 
                 strlcpy(context->ticker_received,
                         get_ticker_for_address(context->token_received),
                         sizeof(context->ticker_received));
-                printf_hex_array("TOKEN RECEIVED: ", ADDRESS_LENGTH, context->token_received);
+                // printf_hex_array("TOKEN RECEIVED: ", ADDRESS_LENGTH, context->token_received);
                 PRINTF("TICKERRR: %s \n", get_ticker_for_address(context->token_received));
                 decimals = get_decimals_for_ticker(context->ticker_received);
                 PRINTF("TICKER REC: %s %d \n",get_ticker_for_address(context->token_received),decimals);
@@ -175,7 +175,9 @@ static bool set_beneficiary_ui(ethQueryContractUI_t *msg, context_t *context) {
 // Set UI for "Approve" screen.
 static bool set_approve_ui(ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, "Approving", msg->titleLength);
-
+    
+    if (context->selectorIndex == TRANSFER) 
+        strlcpy(msg->title, "Transfering", msg->titleLength);
 
     printf_hex_array("destination: ", ADDRESS_LENGTH, msg->pluginSharedRO->txContent->destination);
     
@@ -281,7 +283,7 @@ void handle_query_contract_ui(ethQueryContractUI_t *msg) {
 
     switch (msg->screenIndex) {
         case 0:
-            if(context->selectorIndex == APPROVE) {
+            if(context->selectorIndex == APPROVE || context->selectorIndex == TRANSFER) {
                 PRINTF("executing set apr ui");
                 ret = set_approve_ui(msg, context);
             } else {
@@ -289,7 +291,7 @@ void handle_query_contract_ui(ethQueryContractUI_t *msg) {
             }
             break;
         case 1:
-            if(context->selectorIndex == APPROVE ) {
+            if(context->selectorIndex == APPROVE || context->selectorIndex == TRANSFER) {
                 PRINTF("executing set apr amount");
                 ret = set_approve_amount(msg, context);
             } else if(context->selectorIndex == WRAP || context->selectorIndex == UNWRAP ) {
