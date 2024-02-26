@@ -115,6 +115,25 @@ static void handle_approve_erc20 (ethPluginProvideParameter_t *msg, context_t *c
     }
 }
 
+// static void handle_transfer_erc20 (ethPluginProvideParameter_t *msg, context_t *context) {
+
+//     switch (context->next_param) {
+//         case BENEFICIARY: 
+//             copy_address(context->beneficiary, msg->parameter, sizeof(context->beneficiary));
+//             // printf_hex_array("BENEFICIARY: ", ADDRESS_LENGTH, context->beneficiary);
+//             context->next_param = AMOUNT_SENT;
+//             break;
+//         case AMOUNT_SENT:
+//             copy_parameter(context->amount_sent, msg->parameter, sizeof(context->amount_sent));
+//             context->next_param = UNEXPECTED_PARAMETER;
+//             break;
+//         default:
+//             PRINTF("Param not supported: %d\n", context->next_param);
+//             msg->result = ETH_PLUGIN_RESULT_ERROR;
+//             break;
+//     }
+// }
+
 static void handle_wrap_unwrap_WETH (ethPluginProvideParameter_t *msg, context_t *context) {
 
     switch(context->next_param) {
@@ -283,6 +302,7 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
             handle_swap_exact_tokens_for_eth(msg, context);
             break;
         case APPROVE:
+        case TRANSFER:
             PRINTF("Running Approve\n");
             handle_approve_erc20(msg, context);
             break;

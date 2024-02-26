@@ -27,9 +27,9 @@ void handle_finalize(ethPluginFinalize_t *msg) {
     if(context->token_sent != NULL) {
         msg->tokenLookup1 = context->token_sent;
         context->token_sent_found = true;
-        printf_hex_array("setting token sent to: ",
-                        ADDRESS_LENGTH,
-                        context->token_sent);
+        // printf_hex_array("setting token sent to: ",
+        //                 ADDRESS_LENGTH,
+        //                 context->token_sent);
     } else {
         msg->tokenLookup1 = NULL;
         context->token_sent_found = false;
@@ -38,9 +38,9 @@ void handle_finalize(ethPluginFinalize_t *msg) {
     if(context->token_received != NULL) {
         msg->tokenLookup2 = context->token_received;
         context->token_received_found = true;
-        printf_hex_array("setting token recieved to: ",
-                        ADDRESS_LENGTH,
-                        context->token_received);
+        // printf_hex_array("setting token recieved to: ",
+        //                 ADDRESS_LENGTH,
+        //                 context->token_received);
     } else {
         msg->tokenLookup2 = NULL;
         context->token_received_found = false;

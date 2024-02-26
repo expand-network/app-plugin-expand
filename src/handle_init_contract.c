@@ -3,14 +3,12 @@
 
 void handle_init_contract(ethPluginInitContract_t *msg) {
     PRINTF("Expand pulgin handle_init_contract");
-    // Make sure we are running a compatible version.
     if (msg->interfaceVersion != ETH_PLUGIN_INTERFACE_VERSION_LATEST) {
-        // If not the case, return the `UNAVAILABLE` status.
         msg->result = ETH_PLUGIN_RESULT_UNAVAILABLE;
         return;
     }
 
-    // Double check that the `context_t` struct is not bigger than the maximum size (defined by
+    // checking `context_t` struct is not bigger than the maximum size (defined by
     // `msg->pluginContextLength`).
     if (msg->pluginContextLength < sizeof(context_t)) {
         PRINTF("Plugin parameters structure is bigger than allowed size\n");
@@ -49,6 +47,8 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
             context->next_param = AMOUNT_SENT;
             break;
         case APPROVE:
+        case TRANSFER:
+        case BATCH_SWAP:
             context->next_param = BENEFICIARY;
             break;
         case WRAP:
@@ -66,9 +66,6 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
             }
             msg->result = ETH_PLUGIN_RESULT_ERROR;
             return;
-        case BATCH_SWAP:
-            context->next_param = BENEFICIARY;
-            break;
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;

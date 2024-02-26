@@ -34,6 +34,9 @@ void handle_query_contract_id(ethQueryContractID_t *msg) {
     } else if(context->selectorIndex == CURVE_EXCHANGE) {
         strlcpy(msg->version, "Swap", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
+    } else if(context->selectorIndex == TRANSFER) {
+        strlcpy(msg->version, "Transfer", msg->versionLength);
+        msg->result = ETH_PLUGIN_RESULT_OK;
     }
 
     else {
