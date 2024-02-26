@@ -8,8 +8,8 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
         return;
     }
 
-    // checking `context_t` struct is not bigger than the maximum size (defined by
-    // `msg->pluginContextLength`).
+    // checking `context_t` struct size 
+    // (defined by `msg->pluginContextLength`).
     if (msg->pluginContextLength < sizeof(context_t)) {
         PRINTF("Plugin parameters structure is bigger than allowed size\n");
         msg->result = ETH_PLUGIN_RESULT_ERROR;
