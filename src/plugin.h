@@ -53,6 +53,7 @@ typedef enum {
     TOKEN_SENT,
     TOKEN_RECEIVED,
     BENEFICIARY,
+    KIND,
     PATH_OFFSET,
     PATH_LENGTH,
     UNEXPECTED_PARAMETER,
@@ -69,6 +70,7 @@ typedef struct context_s {
     // uint8_t decimals_recieved;
     bool token_sent_found;
     bool token_received_found;
+    bool kind;
     uint8_t skip;
     char ticker_sent[MAX_TICKER_LEN];
     char ticker_received[MAX_TICKER_LEN];
@@ -98,6 +100,35 @@ typedef struct context_s {
 #define USDC_TICKER "USDC"
 #define USDC_DECIMALS 6
 
+#define USDT_TICKER "USDT"
+#define USDT_DECIMALS 6
+
+#define LIT_TICKER "LIT"
+#define LINK_TICKER "LINK" //18
+#define SUSHI_TICKER "SHUSHI" // 18
+#define SYNTHETIC_TICKER "SUSD" // 18
+#define UNI_TICKER "UNI"  // 18
+#define TUSD_TICKER "TUSD" // 18
+#define USDP_TICKER "USDP"  // 18
+#define WBTC_TICKER "WBTC" // 8
+#define STETH_TICKER   "STETH"
+#define STETH_DECIMALS WEI_TO_ETHER
+
+#define RETH_TICKER   "RETH"
+#define RETH_DECIMALS WEI_TO_ETHER
+
+#define FRXETH_TICKER   "FRXETH"
+#define FRXETH_DECIMALS WEI_TO_ETHER
+#define SFRXETH_TICKER "sfrxETH"
+
+
+#define OUSD_TICKER   "OUSD"
+#define OUSD_DECIMALS WEI_TO_ETHER
+
+#define WOETH_TICKER "WOETH"
+#define WOUSD_TICKER "WOUSD"
+
+
 extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t WETH_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t FRXETH_ADDRESS[ADDRESS_LENGTH];
@@ -111,7 +142,14 @@ extern const uint8_t USDT_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t CURVE_OETH_POOL_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t CURVE_OUSD_POOL_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t CURVE_POOL_ETH_ADDRESS[ADDRESS_LENGTH];
-
+extern const uint8_t LIT_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t LINK_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t SUSHI_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t SYNTHETIC_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t UNI_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t TUSD_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t USDP_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t WBTC_ADDRESS[ADDRESS_LENGTH];
 
 
 
@@ -127,6 +165,14 @@ extern const uint8_t CURVE_POOL_ETH_ADDRESS[ADDRESS_LENGTH];
 #define ADDRESS_IS_DAI(_addr)    (!memcmp(_addr, DAI_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_USDC(_addr)   (!memcmp(_addr, USDC_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_USDT(_addr)   (!memcmp(_addr, USDT_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_LIT(_addr)    (!memcmp(_addr, LIT_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_LINK(_addr)    (!memcmp(_addr, LINK_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_SUSHI(_addr)    (!memcmp(_addr, SUSHI_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_SYNTHETIC(_addr)    (!memcmp(_addr, SYNTHETIC_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_UNI(_addr)    (!memcmp(_addr, UNI_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_TUSD(_addr)    (!memcmp(_addr, TUSD_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_USDP(_addr)    (!memcmp(_addr, USDP_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_WBTC(_addr)    (!memcmp(_addr, WBTC_ADDRESS, ADDRESS_LENGTH))
 
 
 // Check if the context structure will fit in the RAM
@@ -144,9 +190,36 @@ static inline const char *get_ticker_for_address(uint8_t address[ADDRESS_LENGTH]
         return USDC_TICKER;
     } else if (ADDRESS_IS_OETH(address)) {
         return OETH_TICKER;
-    } else {
-        return USDC_TICKER;
+    } else if (ADDRESS_IS_LIT(address)) {
+        return LIT_TICKER;
+    } else if (ADDRESS_IS_LINK(address)) {
+        return LINK_TICKER;
+    } else if (ADDRESS_IS_FRXETH(address)) {
+        return FRXETH_TICKER;
+    } else if (ADDRESS_IS_RETH(address)) {
+        return RETH_TICKER;
+    } else if (ADDRESS_IS_STETH(address)) {
+        return STETH_TICKER;
+    } else if (ADDRESS_IS_OUSD(address)) {
+        return OUSD_TICKER;
+    } else if (ADDRESS_IS_USDT(address)) {
+        return USDT_TICKER;
+    } else if (ADDRESS_IS_SUSHI(address)) {
+        return SUSHI_TICKER;
+    } else if (ADDRESS_IS_SYNTHETIC(address)) {
+        return SYNTHETIC_TICKER;
+    } else if(ADDRESS_IS_UNI(address)) {
+        return UNI_TICKER;
+    } else if(ADDRESS_IS_TUSD(address)) {
+        return TUSD_TICKER;
+    } else if(ADDRESS_IS_USDP(address)) {
+        return USDP_TICKER;
+    } else if(ADDRESS_IS_WBTC(address)) {
+        return WBTC_TICKER;
     }
+    else {
+        return DEFAULT_TICKER;
+    } 
 }
 
 static inline void printf_hex_array(const char *title __attribute__((unused)),
@@ -162,9 +235,10 @@ static inline void printf_hex_array(const char *title __attribute__((unused)),
 static inline const uint8_t get_decimals_for_ticker(const char *ticker __attribute__((unused))) {
     if(strcmp(ticker, USDC_TICKER)== 0) {
         return USDC_DECIMALS;
-    } else if(strcmp(ticker, WETH_TICKER) == 0) {
-        return WEI_TO_ETHER;
-    } else if(strcmp(ticker, DAI_TICKER) == 0) {
+    } else if(strcmp(ticker, WETH_TICKER) == 0 
+             || strcmp(ticker, DAI_TICKER) == 0
+             || strcmp(ticker, LINK_TICKER) == 0
+             || strcmp(ticker, LIT_TICKER) == 0) {
         return WEI_TO_ETHER;
     } else {
         return WEI_TO_ETHER;

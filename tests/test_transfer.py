@@ -15,7 +15,7 @@ PLUGIN_NAME = get_appname_from_makefile()
 with open ("%s/ERC20.json" % (ABIS_FOLDER)) as file:
     contract = Web3().eth.contract(
         abi=json.load(file),
-        address=bytes.fromhex("1c7D4B196Cb0C7B01d743Fbc6116a902379C7238")
+        address=bytes.fromhex("A0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48")
     )
 
 def test_transfer_erc20(backend, firmware, navigator, test_name):

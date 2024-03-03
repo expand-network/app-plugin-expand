@@ -48,7 +48,6 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
             break;
         case APPROVE:
         case TRANSFER:
-        case BATCH_SWAP:
             context->next_param = BENEFICIARY;
             break;
         case WRAP:
@@ -66,6 +65,9 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
             }
             msg->result = ETH_PLUGIN_RESULT_ERROR;
             return;
+        case BATCH_SWAP:
+            context->next_param = KIND;
+            break;
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;

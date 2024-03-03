@@ -9,14 +9,15 @@ static void handle_swap_exact_eth_for_tokens(ethPluginProvideParameter_t *msg, c
     }
 
     switch (context->next_param) {
-        case MIN_AMOUNT_RECEIVED:  // amountOutMin
-            copy_parameter(context->amount_received,
-                           msg->parameter,
-                           sizeof(context->amount_received));
+        case MIN_AMOUNT_RECEIVED:
+            copy_parameter( context->amount_received,
+                            msg->parameter,
+                            sizeof(context->amount_received)
+                            );
             // printf_hex_array("amount_rec: ", ADDRESS_LENGTH, context->amount_received);
             context->next_param = PATH_OFFSET;
             break;
-        case PATH_OFFSET:  // path
+        case PATH_OFFSET:
             context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
             context->next_param = BENEFICIARY;
             break;
@@ -81,6 +82,7 @@ static void handle_swap_exact_tokens_for_eth (ethPluginProvideParameter_t *msg, 
         case TOKEN_SENT:
             copy_address(context->token_sent, msg->parameter, sizeof(context->token_sent));
             context->next_param = TOKEN_RECEIVED;
+            printf_hex_array("TOKEN_SENT: ", ADDRESS_LENGTH, context->token_sent);
             if(context->selectorIndex == SWAP_EXACT_TOKENS_FOR_TOKENS){
                 context->skip += 1;
             }
@@ -269,6 +271,62 @@ static void handle_curve_swap(ethPluginProvideParameter_t *msg, context_t *conte
 }
 
 static void handle_batch_swap(ethPluginProvideParameter_t *msg, context_t *context) {
+    PRINTF("\n Inside HandleBatch Swap\n");
+    switch (context->next_param) {
+        case KIND:
+            context->kind = msg->parameter;
+            PRINTF("Kind: %d\n", context->kind);
+            context->skip += 4;
+            context->next_param = BENEFICIARY;
+            break;
+        case BENEFICIARY:
+            copy_address(context->beneficiary, msg->parameter, sizeof(context->beneficiary));
+            printf_hex_array("BENEFICIARY: ", ADDRESS_LENGTH, context->beneficiary);
+            context->skip += 9;
+            context->next_param = AMOUNT_SENT;
+            break;
+        case AMOUNT_SENT:
+            if(context->kind)
+                copy_parameter(context->amount_received,
+                            msg->parameter,
+                            sizeof(context->amount_received));
+            else
+                 copy_parameter(context->amount_sent,
+                            msg->parameter,
+                            sizeof(context->amount_sent));
+            printf_hex_array("AMOUNT SENT: ", ADDRESS_LENGTH, msg->parameter);
+            context->skip += 9;
+            context->next_param = TOKEN_SENT;
+            break;
+        case TOKEN_SENT:
+            copy_address(context->token_sent, msg->parameter, sizeof(context->token_sent));
+            context->skip += 1;
+            printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->token_sent);
+            context->next_param = TOKEN_RECEIVED;
+            break;
+        case TOKEN_RECEIVED:
+            copy_address(context->token_received, msg->parameter, sizeof(context->token_received));
+            printf_hex_array("TOKEN RECEIVED: ", ADDRESS_LENGTH, context->token_received);
+            context->skip += 1;
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        // case MIN_AMOUNT_RECEIVED:
+        //     if(context->kind)
+        //         copy_parameter(context->amount_sent,
+        //                     msg->parameter,
+        //                     sizeof(context->amount_sent));
+        //     else
+        //         copy_parameter(context->amount_received,
+        //                     msg->parameter,
+        //                     sizeof(context->amount_received));
+        //     context->next_param = UNEXPECTED_PARAMETER;
+        //     break;
+            
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
 
 }
 

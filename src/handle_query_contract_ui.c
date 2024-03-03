@@ -64,6 +64,13 @@ static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
             token_amount_size = sizeof(context->amount_sent);
             decimals =  get_decimals_for_ticker(context->ticker_sent);
             break;
+        case BATCH_SWAP:
+            strlcpy(context->ticker_sent, 
+                    get_ticker_for_address(context->token_sent),
+                    sizeof(context->ticker_sent));
+            decimals =  get_decimals_for_ticker(context->ticker_sent);
+            token_amount_size = sizeof(context->amount_sent);
+            break;
         default:
              PRINTF("Unhandled selector Index: %d\n", context->selectorIndex);
              msg->result = ETH_PLUGIN_RESULT_ERROR;
@@ -126,6 +133,13 @@ static bool set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) 
                     get_ticker_for_address(context->token_received), 
                     sizeof(context->ticker_received));
             decimals = get_decimals_for_ticker(context->ticker_received);
+            break;
+        case BATCH_SWAP:
+            strlcpy(context->ticker_received, 
+                    get_ticker_for_address(context->token_received), 
+                    sizeof(context->ticker_received));
+            decimals = get_decimals_for_ticker(context->ticker_received);
+            copy_parameter(context->amount_received, 0 , sizeof(context->amount_received));
             break;
         default: 
              PRINTF("Unhandled selector Index: %d\n", context->selectorIndex);

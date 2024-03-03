@@ -10,25 +10,26 @@ void handle_provide_token(ethPluginProvideInfo_t *msg) {
 
     // Ledger ETH app is not returning anything in msg->item1 and msg->item2 so this is commented
 
-    // if (msg->item1) {
-    //     // The Ethereum App found the information for the requested token!
-    //     // Store its decimals.
-    //     // context->decimals_sent = msg->item1->token.decimals;
-    //     // // Store its ticker.
-    //     // strlcpy(context->ticker_sent, (char *) msg->item1->token.ticker, sizeof(context->ticker_sent));
+    if (msg->item1) {
+        // The Ethereum App found the information for the requested token!
+        // Store its decimals.
+        // context->decimals_sent = msg->item1->token.decimals;
+        // // Store its ticker.
+        // strlcpy(context->ticker_sent, (char *) msg->item1->token.ticker, sizeof(context->ticker_sent));
+        PRINTF("found token 1: decimals: %d\n",msg->item1->token.decimals);
+        // printf_hex_array()
+        // Keep track that we found the token.
+        context->token_sent_found = true;
+        PRINTF("Setting token lookup1 true");
+        // strlcpy(context->ticker_sent, 
+        //         get_ticker_for_address(context->token_received), 
+        //         sizeof(context->ticker_sent));
+        // strlcpy(context->decimals_sent, 
+        //         get_decimals_for_ticker(context->ticker_sent),
+        //         sizeof(context->decimals_sent));
+        // printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->token_sent);
 
-    //     // Keep track that we found the token.
-    //     context->token_sent_found = true;
-    //     PRINTF("Setting token lookup1 true");
-    //     // strlcpy(context->ticker_sent, 
-    //     //         get_ticker_for_address(context->token_received), 
-    //     //         sizeof(context->ticker_sent));
-    //     // strlcpy(context->decimals_sent, 
-    //     //         get_decimals_for_ticker(context->ticker_sent),
-    //     //         sizeof(context->decimals_sent));
-    //     // printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->token_sent);
-
-    // }
+    }
     // else {
     //     // The Ethereum App did not manage to find the info for the requested token.
     //     context->token_sent_found = false;
