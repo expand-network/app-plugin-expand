@@ -66,8 +66,8 @@ typedef struct context_s {
     uint8_t beneficiary[ADDRESS_LENGTH];
     uint8_t token_sent[ADDRESS_LENGTH];
     uint8_t token_received[ADDRESS_LENGTH];
-    // uint8_t decimals_sent;
-    // uint8_t decimals_recieved;
+    uint8_t decimals_sent;
+    uint8_t decimals_received;
     bool token_sent_found;
     bool token_received_found;
     bool kind;
@@ -97,13 +97,16 @@ typedef struct context_s {
 #define DAI_TICKER "DAI"
 #define DAI_DECIMALS WEI_TO_ETHER
 
+#define SDAI_TICKER "sDAI"
+#define SDAI_DECIMALS WEI_TO_ETHER
+
 #define USDC_TICKER "USDC"
 #define USDC_DECIMALS 6
 
 #define USDT_TICKER "USDT"
 #define USDT_DECIMALS 6
 
-#define LIT_TICKER "LIT"
+// #define LIT_TICKER "LIT"
 #define LINK_TICKER "LINK" //18
 #define SUSHI_TICKER "SHUSHI" // 18
 #define SYNTHETIC_TICKER "SUSD" // 18
@@ -128,6 +131,9 @@ typedef struct context_s {
 #define WOETH_TICKER "WOETH"
 #define WOUSD_TICKER "WOUSD"
 
+#define FRAX_TICKER "FRAX"
+#define FRAX_DECIMALS WEI_TO_ETHER
+
 
 extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t WETH_ADDRESS[ADDRESS_LENGTH];
@@ -142,7 +148,7 @@ extern const uint8_t USDT_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t CURVE_OETH_POOL_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t CURVE_OUSD_POOL_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t CURVE_POOL_ETH_ADDRESS[ADDRESS_LENGTH];
-extern const uint8_t LIT_ADDRESS[ADDRESS_LENGTH];
+// extern const uint8_t LIT_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t LINK_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t SUSHI_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t SYNTHETIC_ADDRESS[ADDRESS_LENGTH];
@@ -150,6 +156,12 @@ extern const uint8_t UNI_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t TUSD_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t USDP_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t WBTC_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t FRAX_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t CURVE_STETH_POOL_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t CURVE_THREE_POOL_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t CURVE_FRAXSDAI_POOL_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t SDAI_ADDRESS[ADDRESS_LENGTH];
+
 
 
 
@@ -165,7 +177,7 @@ extern const uint8_t WBTC_ADDRESS[ADDRESS_LENGTH];
 #define ADDRESS_IS_DAI(_addr)    (!memcmp(_addr, DAI_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_USDC(_addr)   (!memcmp(_addr, USDC_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_USDT(_addr)   (!memcmp(_addr, USDT_ADDRESS, ADDRESS_LENGTH))
-#define ADDRESS_IS_LIT(_addr)    (!memcmp(_addr, LIT_ADDRESS, ADDRESS_LENGTH))
+// #define ADDRESS_IS_LIT(_addr)    (!memcmp(_addr, LIT_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_LINK(_addr)    (!memcmp(_addr, LINK_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_SUSHI(_addr)    (!memcmp(_addr, SUSHI_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_SYNTHETIC(_addr)    (!memcmp(_addr, SYNTHETIC_ADDRESS, ADDRESS_LENGTH))
@@ -173,7 +185,8 @@ extern const uint8_t WBTC_ADDRESS[ADDRESS_LENGTH];
 #define ADDRESS_IS_TUSD(_addr)    (!memcmp(_addr, TUSD_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_USDP(_addr)    (!memcmp(_addr, USDP_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_WBTC(_addr)    (!memcmp(_addr, WBTC_ADDRESS, ADDRESS_LENGTH))
-
+#define ADDRESS_IS_FRAX(_addr)     (!memcmp(_addr, FRAX_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_SDAI(_addr)     (!memcmp(_addr, SDAI_ADDRESS, ADDRESS_LENGTH))
 
 // Check if the context structure will fit in the RAM
 ASSERT_SIZEOF_PLUGIN_CONTEXT(context_t);
@@ -190,8 +203,6 @@ static inline const char *get_ticker_for_address(uint8_t address[ADDRESS_LENGTH]
         return USDC_TICKER;
     } else if (ADDRESS_IS_OETH(address)) {
         return OETH_TICKER;
-    } else if (ADDRESS_IS_LIT(address)) {
-        return LIT_TICKER;
     } else if (ADDRESS_IS_LINK(address)) {
         return LINK_TICKER;
     } else if (ADDRESS_IS_FRXETH(address)) {
@@ -216,6 +227,10 @@ static inline const char *get_ticker_for_address(uint8_t address[ADDRESS_LENGTH]
         return USDP_TICKER;
     } else if(ADDRESS_IS_WBTC(address)) {
         return WBTC_TICKER;
+    } else if(ADDRESS_IS_FRAX(address)) {
+        return FRAX_ADDRESS;
+    } else if (ADDRESS_IS_SDAI(address)) {
+        return SDAI_TICKER; 
     }
     else {
         return DEFAULT_TICKER;
@@ -233,12 +248,13 @@ static inline void printf_hex_array(const char *title __attribute__((unused)),
 }
                     
 static inline const uint8_t get_decimals_for_ticker(const char *ticker __attribute__((unused))) {
-    if(strcmp(ticker, USDC_TICKER)== 0) {
+    if(strcmp(ticker, USDC_TICKER)== 0 
+              || strcmp(ticker, USDT_TICKER)== 0 ) {
         return USDC_DECIMALS;
     } else if(strcmp(ticker, WETH_TICKER) == 0 
              || strcmp(ticker, DAI_TICKER) == 0
              || strcmp(ticker, LINK_TICKER) == 0
-             || strcmp(ticker, LIT_TICKER) == 0) {
+             ) {
         return WEI_TO_ETHER;
     } else {
         return WEI_TO_ETHER;

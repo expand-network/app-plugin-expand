@@ -12,13 +12,13 @@ ROOT_SCREENSHOT_PATH = Path(__file__).parent
 ABIS_FOLDER = "%s/abis" % (os.path.dirname(__file__))
 PLUGIN_NAME = get_appname_from_makefile()
 
-with open("%s/curve-pool.abi.json" % (ABIS_FOLDER)) as file:
+with open("%s/steth_pool.json" % (ABIS_FOLDER)) as file:
     contract = Web3().eth.contract(
         abi = json.load(file),
-        address=bytes.fromhex("94b17476a93b3262d87b9a326965d1e91f9c13e7")
+        address=bytes.fromhex("DC24316b9AE028F1497c275EB9192a3Ea0f67022")
     )
 
-def test_curve_exchange_oeth(backend, firmware, navigator, test_name):
+def test_curve_steth(backend, firmware, navigator, test_name):
     client = EthAppClient(backend)
 
     data = contract.encodeABI("exchange",[

@@ -1,17 +1,13 @@
 from pathlib import Path
 import json
 import os
-
 import datetime
 import time
-
 from web3 import Web3
 from eth_typing import ChainId
-
 from ledger_app_clients.ethereum.client import EthAppClient, StatusWord
 from ledger_app_clients.ethereum.utils import get_selector_from_data
 from ragger.navigator import NavInsID
-
 from .utils import get_appname_from_makefile
 
 

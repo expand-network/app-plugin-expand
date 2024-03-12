@@ -35,9 +35,9 @@ static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
              strlcpy(context->ticker_sent, 
                      get_ticker_for_address(context->token_sent), 
                      sizeof(context->ticker_sent));
-            //  printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->token_sent);
+             printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->token_sent);
             //  token_amount = context->amount_sent;
-             token_amount_size = msg->pluginSharedRO->txContent->value.length;
+             token_amount_size = sizeof(context->amount_sent);
              decimals =  get_decimals_for_ticker(context->ticker_sent);
              PRINTF("decimals %d \n", decimals);
              break; 
@@ -123,7 +123,6 @@ static bool set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) 
                         get_ticker_for_address(context->token_received),
                         sizeof(context->ticker_received));
                 // printf_hex_array("TOKEN RECEIVED: ", ADDRESS_LENGTH, context->token_received);
-                PRINTF("TICKERRR: %s \n", get_ticker_for_address(context->token_received));
                 decimals = get_decimals_for_ticker(context->ticker_received);
                 PRINTF("TICKER REC: %s %d \n",get_ticker_for_address(context->token_received),decimals);
             }
@@ -149,13 +148,13 @@ static bool set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) 
     }
 
     // If the token look up failed, use the default network ticker along with the default decimals.
-    if (context->token_received_found == false) {
-        // PRINTF("setting WEI_TO_ETHER");
-        decimals = WEI_TO_ETHER;
-        strlcpy(context->ticker_received, 
-                msg->network_ticker, 
-                sizeof(context->ticker_received));
-    }
+    // if (context->token_received_found == false) {
+    //     // PRINTF("setting WEI_TO_ETHER");
+    //     decimals = WEI_TO_ETHER;
+    //     strlcpy(context->ticker_received, 
+    //             msg->network_ticker, 
+    //             sizeof(context->ticker_received));
+    // }
 
     return amountToString(context->amount_received,
                           sizeof(context->amount_received),

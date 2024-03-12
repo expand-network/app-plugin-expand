@@ -159,10 +159,62 @@ static void handle_token_sent_curve_pool(ethPluginProvideParameter_t *msg, conte
     bool is_oeth = memcmp(CURVE_OETH_POOL_ADDRESS,
                           msg->pluginSharedRO->txContent->destination,
                           ADDRESS_LENGTH) == 0;    
-    // bool is_oeth = true;
-    PRINTF("\n Its is_oeth: \n");
+               
+    bool is_steth = memcmp(CURVE_STETH_POOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
 
-    if (is_oeth) {
+    bool is_3pool = memcmp(CURVE_THREE_POOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+
+    bool is_fraxSdai = memcmp(CURVE_FRAXSDAI_POOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+
+    if (is_steth) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                // printf_hex_array()
+                memcpy(context->token_sent, NULL_ETH_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_sent, STETH_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    } else if (is_3pool) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                // printf_hex_array()
+                memcpy(context->token_received, DAI_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_received, USDC_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 2:
+                memcpy(context->token_sent, USDT_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        } 
+    } if (is_fraxSdai) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                // printf_hex_array()
+                memcpy(context->token_sent, FRAX_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_sent, SDAI_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    } else if (is_oeth) {
         switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
             case 0:
                 // printf_hex_array()
@@ -175,28 +227,11 @@ static void handle_token_sent_curve_pool(ethPluginProvideParameter_t *msg, conte
                 PRINTF("Param not supported\n");
                 break;
         }
-    } else {
-        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
-            case 0:
-                memcpy(context->token_sent, OUSD_ADDRESS, ADDRESS_LENGTH);
-                break;
-            case 1:
-                memcpy(context->token_sent, DAI_ADDRESS, ADDRESS_LENGTH);
-                break;
-            case 2:
-                memcpy(context->token_sent, USDC_ADDRESS, ADDRESS_LENGTH);
-                break;
-            case 3:
-                memcpy(context->token_sent, USDT_ADDRESS, ADDRESS_LENGTH);
-                break;
-            default:
-                PRINTF("Param not supported\n");
-                break;
-        }
     }
 
     printf_hex_array("TOKEN SENT:__ ", ADDRESS_LENGTH, context->token_sent);
 }
+
 
 static void handle_token_received_curve_pool(ethPluginProvideParameter_t *msg, context_t *context) {
     memset(context->token_received, 0, sizeof(context->token_received));
@@ -207,7 +242,62 @@ static void handle_token_received_curve_pool(ethPluginProvideParameter_t *msg, c
     PRINTF("Inside rec\n");
     // determine token addresses of curve pools based on contract address and
     // value of i/j params
-    if (is_oeth) {
+
+    bool is_steth = memcmp(CURVE_STETH_POOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+
+    bool is_3pool = memcmp(CURVE_THREE_POOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+
+    bool is_fraxSdai = memcmp(CURVE_FRAXSDAI_POOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+
+    if (is_steth) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                // printf_hex_array()
+                memcpy(context->token_received, NULL_ETH_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_received, STETH_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    } else if (is_3pool) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                // printf_hex_array()
+                memcpy(context->token_received, DAI_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_received, USDC_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 2:
+                memcpy(context->token_sent, USDT_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        } 
+    } if (is_fraxSdai) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                // printf_hex_array()
+                memcpy(context->token_sent, FRAX_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_sent, SDAI_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    } else if (is_oeth) {
         switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
             case 0:
                 memcpy(context->token_received, NULL_ETH_ADDRESS, ADDRESS_LENGTH);
@@ -219,25 +309,8 @@ static void handle_token_received_curve_pool(ethPluginProvideParameter_t *msg, c
                 PRINTF("Param not supported\n");
                 break;
         }
-    } else {
-        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
-            case 0:
-                memcpy(context->token_received, OUSD_ADDRESS, ADDRESS_LENGTH);
-                break;
-            case 1:
-                memcpy(context->token_received, DAI_ADDRESS, ADDRESS_LENGTH);
-                break;
-            case 2:
-                memcpy(context->token_received, USDC_ADDRESS, ADDRESS_LENGTH);
-                break;
-            case 3:
-                memcpy(context->token_received, USDT_ADDRESS, ADDRESS_LENGTH);
-                break;
-            default:
-                PRINTF("Param not supported\n");
-                break;
-        }
     }
+
     printf_hex_array("TOKEN RECEIVED: ", ADDRESS_LENGTH, context->token_received);
 }
 
@@ -335,10 +408,10 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
     // We use `%.*H`: it's a utility function to print bytes. You first give
     // the number of bytes you wish to print (in this case, `PARAMETER_LENGTH`) and then
     // the address (here `msg->parameter`).
-    PRINTF("expand plugin provide parameter: offset %d\nBytes: %.*H\n",
-           msg->parameterOffset,
-           PARAMETER_LENGTH,
-           msg->parameter);
+    // PRINTF("expand plugin provide parameter: offset %d\nBytes: %.*H\n",
+    //        msg->parameterOffset,
+    //        PARAMETER_LENGTH,
+    //        msg->parameter);
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 
@@ -346,9 +419,7 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
         context->skip--;
         return;
     }
-    PRINTF("RUNNIG PROVIDE PARAM %d\n", context->selectorIndex);
-    PRINTF("U2B....%d\n", U2BE(msg->parameter, PARAMETER_LENGTH - 2));
-    printf_hex_array("destination: ", ADDRESS_LENGTH, msg->pluginSharedRO->txContent->destination);
+    PRINTF("Running Provide Param %d\n", context->selectorIndex);
 
     // EDIT THIS: adapt the cases and the names of the functions.
     switch (context->selectorIndex) {

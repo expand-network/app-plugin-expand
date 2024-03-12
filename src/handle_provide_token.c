@@ -10,6 +10,45 @@ void handle_provide_token(ethPluginProvideInfo_t *msg) {
 
     // Ledger ETH app is not returning anything in msg->item1 and msg->item2 so this is commented
 
+    // if (ADDRESS_IS_NETWORK_TOKEN(context->token_sent)) {
+    //     context->decimals_sent = WEI_TO_ETHER;
+    //     context->token_sent_found = 1;
+    //     PRINTF("Its Network Token");
+    // } else if (msg->item1 != NULL) {
+    //     context->decimals_sent = msg->item1->token.decimals;
+    //     strlcpy(context->ticker_sent,
+    //             (char *) msg->item1->token.ticker,
+    //             sizeof(context->ticker_sent));
+    //     context->token_sent_found = 1;
+    //     PRINTF("Its not Network token");
+    // } else {
+    //     // CAL did not find the token and token is not ETH.
+    //     context->decimals_sent = WEI_TO_ETHER;
+    //     // We will need an additional screen to display a warning message.
+    //     msg->additionalScreens++;
+    // }
+
+    // if (ADDRESS_IS_NETWORK_TOKEN(context->token_received)) {
+    //     context->decimals_received = WEI_TO_ETHER;
+    //     context->token_received_found = 1;
+    //             PRINTF("Its Network Token");
+
+    // } else if (msg->item2 != NULL) {
+    //     context->decimals_received = msg->item2->token.decimals;
+    //     strlcpy(context->ticker_received,
+    //             (char *) msg->item2->token.ticker,
+    //             sizeof(context->ticker_received));
+    //     context->token_received_found = 1;
+    //             PRINTF("Its not Network token");
+
+    // } else {
+    //     // CAL did not find the token and token is not ETH.
+    //     context->decimals_received = WEI_TO_ETHER;
+    //     // We will need an additional screen to display a warning message.
+    //     msg->additionalScreens++;
+    // }
+
+
     if (msg->item1) {
         // The Ethereum App found the information for the requested token!
         // Store its decimals.
@@ -30,30 +69,30 @@ void handle_provide_token(ethPluginProvideInfo_t *msg) {
         // printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->token_sent);
 
     }
-    // else {
-    //     // The Ethereum App did not manage to find the info for the requested token.
-    //     context->token_sent_found = false;
-    //     PRINTF("Setting token lookup1 false");
+    else {
+        // The Ethereum App did not manage to find the info for the requested token.
+        context->token_sent_found = false;
+        PRINTF("Setting token lookup1 false");
 
-    //     // If we wanted to add a screen, say a warning screen for example, we could instruct the
-    //     // ethereum app to add an additional screen by setting `msg->additionalScreens` here, just
-    //     // like so:
-    //     // msg->additionalScreens = 1;
-    // }
+        // If we wanted to add a screen, say a warning screen for example, we could instruct the
+        // ethereum app to add an additional screen by setting `msg->additionalScreens` here, just
+        // like so:
+        // msg->additionalScreens = 1;
+    }
 
-    // if (msg->item2) {
-    //     // context->decimals_recieved = msg->item2->token.decimals;
-    //     // strlcpy(context->ticker_received, (char *) msg->item2->token.ticker, sizeof(context->ticker_received));
+    if (msg->item2) {
+        // context->decimals_recieved = msg->item2->token.decimals;
+        // strlcpy(context->ticker_received, (char *) msg->item2->token.ticker, sizeof(context->ticker_received));
 
-    //     context->token_received_found = true;
-    //     PRINTF("Setting token lookup2 true");
-    //     // strlcpy(context->ticker_received, 
-    //     //         get_ticker_for_address(context->token_received), 
-    //     //         sizeof(context->ticker_received));
-    //     // printf_hex_array("TOKEN RECEIVED: ", ADDRESS_LENGTH, context->token_received);
-    // } else {
-    //     context->token_received_found = false;
-    //     PRINTF("Setting token lookup2 false");
-    // }
+        context->token_received_found = true;
+        PRINTF("Setting token lookup2 true");
+        // strlcpy(context->ticker_received, 
+        //         get_ticker_for_address(context->token_received), 
+        //         sizeof(context->ticker_received));
+        // printf_hex_array("TOKEN RECEIVED: ", ADDRESS_LENGTH, context->token_received);
+    } else {
+        context->token_received_found = false;
+        PRINTF("Setting token lookup2 false");
+    }
     msg->result = ETH_PLUGIN_RESULT_OK;
 }

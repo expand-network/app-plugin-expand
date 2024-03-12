@@ -59,7 +59,14 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
                        ADDRESS_LENGTH) == 0 ||
                 memcmp(CURVE_OUSD_POOL_ADDRESS,
                        msg->pluginSharedRO->txContent->destination,
-                       ADDRESS_LENGTH) == 0) {
+                       ADDRESS_LENGTH) == 0 ||
+                memcmp(CURVE_STETH_POOL_ADDRESS,
+                       msg->pluginSharedRO->txContent->destination,
+                       ADDRESS_LENGTH) == 0 ||
+                memcmp(CURVE_THREE_POOL_ADDRESS,
+                       msg->pluginSharedRO->txContent->destination,
+                       ADDRESS_LENGTH) == 0 
+                       ) {
                 context->next_param = TOKEN_SENT;
                 break;
             }
