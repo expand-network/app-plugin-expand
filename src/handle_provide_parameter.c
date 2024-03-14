@@ -254,6 +254,7 @@ static void handle_token_received_curve_pool(ethPluginProvideParameter_t *msg, c
     bool is_fraxSdai = memcmp(CURVE_FRAXSDAI_POOL_ADDRESS,
                           msg->pluginSharedRO->txContent->destination,
                           ADDRESS_LENGTH) == 0;
+    
 
     if (is_steth) {
         switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
@@ -288,10 +289,10 @@ static void handle_token_received_curve_pool(ethPluginProvideParameter_t *msg, c
         switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
             case 0:
                 // printf_hex_array()
-                memcpy(context->token_sent, FRAX_ADDRESS, ADDRESS_LENGTH);
+                memcpy(context->token_received, FRAX_ADDRESS, ADDRESS_LENGTH);
                 break;
             case 1:
-                memcpy(context->token_sent, SDAI_ADDRESS, ADDRESS_LENGTH);
+                memcpy(context->token_received, SDAI_ADDRESS, ADDRESS_LENGTH);
                 break;
             default:
                 PRINTF("Param not supported\n");

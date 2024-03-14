@@ -134,6 +134,8 @@ typedef struct context_s {
 #define FRAX_TICKER "FRAX"
 #define FRAX_DECIMALS WEI_TO_ETHER
 
+#define PYUSD_TICKER "PYUSD"
+
 
 extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t WETH_ADDRESS[ADDRESS_LENGTH];
@@ -161,6 +163,9 @@ extern const uint8_t CURVE_STETH_POOL_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t CURVE_THREE_POOL_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t CURVE_FRAXSDAI_POOL_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t SDAI_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t PAYPOOL_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t PYUSD_ADDRESS[ADDRESS_LENGTH];
+
 
 
 
@@ -187,6 +192,7 @@ extern const uint8_t SDAI_ADDRESS[ADDRESS_LENGTH];
 #define ADDRESS_IS_WBTC(_addr)    (!memcmp(_addr, WBTC_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_FRAX(_addr)     (!memcmp(_addr, FRAX_ADDRESS, ADDRESS_LENGTH))
 #define ADDRESS_IS_SDAI(_addr)     (!memcmp(_addr, SDAI_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_PYUSD(_addr)     (!memcmp(_addr, PYUSD_ADDRESS, ADDRESS_LENGTH))
 
 // Check if the context structure will fit in the RAM
 ASSERT_SIZEOF_PLUGIN_CONTEXT(context_t);
@@ -228,9 +234,11 @@ static inline const char *get_ticker_for_address(uint8_t address[ADDRESS_LENGTH]
     } else if(ADDRESS_IS_WBTC(address)) {
         return WBTC_TICKER;
     } else if(ADDRESS_IS_FRAX(address)) {
-        return FRAX_ADDRESS;
+        return FRAX_TICKER;
     } else if (ADDRESS_IS_SDAI(address)) {
         return SDAI_TICKER; 
+    } else if (ADDRESS_IS_PYUSD(address)) {
+        return PYUSD_TICKER; 
     }
     else {
         return DEFAULT_TICKER;
@@ -249,7 +257,8 @@ static inline void printf_hex_array(const char *title __attribute__((unused)),
                     
 static inline const uint8_t get_decimals_for_ticker(const char *ticker __attribute__((unused))) {
     if(strcmp(ticker, USDC_TICKER)== 0 
-              || strcmp(ticker, USDT_TICKER)== 0 ) {
+              || strcmp(ticker, USDT_TICKER)== 0
+              || strcmp(ticker, PYUSD_TICKER)== 0 ) {
         return USDC_DECIMALS;
     } else if(strcmp(ticker, WETH_TICKER) == 0 
              || strcmp(ticker, DAI_TICKER) == 0
