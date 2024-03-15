@@ -1,4 +1,4 @@
-ethereum_address = "0xa5588f7cdf560811710a2d82d3c9c99769db1dcb"
+ethereum_address = "0x7f86bf177dd4f3494b841a37e810a34dd56c829b"
 
 # Remove the '0x' prefix and convert to lowercase
 ethereum_address = ethereum_address[2:].lower()

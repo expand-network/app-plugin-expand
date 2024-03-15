@@ -54,6 +54,7 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
             context->next_param = UNEXPECTED_PARAMETER;
             break;
         case CURVE_EXCHANGE:
+        case EXCHANGE_UNDERLYING:
             if (memcmp(CURVE_OETH_POOL_ADDRESS,
                        msg->pluginSharedRO->txContent->destination,
                        ADDRESS_LENGTH) == 0 ||
@@ -68,8 +69,17 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
                        ADDRESS_LENGTH) == 0 ||
                 memcmp(CURVE_FRAXSDAI_POOL_ADDRESS,
                        msg->pluginSharedRO->txContent->destination,
-                       ADDRESS_LENGTH) == 0 
-                       ) {
+                       ADDRESS_LENGTH) == 0 ||
+                memcmp(PAYPOOL_ADDRESS,
+                       msg->pluginSharedRO->txContent->destination,
+                       ADDRESS_LENGTH) == 0 ||
+                memcmp(FRAX_PYUSD_POOL_ADDRESS,
+                       msg->pluginSharedRO->txContent->destination,
+                       ADDRESS_LENGTH) == 0 ||
+                memcmp(TRI_CRYPTO_USDC_ADDRESS,
+                       msg->pluginSharedRO->txContent->destination,
+                       ADDRESS_LENGTH) == 0
+                       )  {
                 context->next_param = TOKEN_SENT;
                 break;
             }

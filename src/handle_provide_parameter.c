@@ -168,7 +168,19 @@ static void handle_token_sent_curve_pool(ethPluginProvideParameter_t *msg, conte
                           msg->pluginSharedRO->txContent->destination,
                           ADDRESS_LENGTH) == 0;
 
-    bool is_fraxSdai = memcmp(CURVE_FRAXSDAI_POOL_ADDRESS,
+    bool is_frax_dai = memcmp(CURVE_FRAXSDAI_POOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+    
+    bool is_pay_pool = memcmp(PAYPOOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+    
+    bool is_frax_pyusd = memcmp(FRAX_PYUSD_POOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+                          
+    bool is_tri_crypto = memcmp(TRI_CRYPTO_USDC_ADDRESS,
                           msg->pluginSharedRO->txContent->destination,
                           ADDRESS_LENGTH) == 0;
 
@@ -201,7 +213,7 @@ static void handle_token_sent_curve_pool(ethPluginProvideParameter_t *msg, conte
                 PRINTF("Param not supported\n");
                 break;
         } 
-    } if (is_fraxSdai) {
+    } if (is_frax_dai) {
         switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
             case 0:
                 // printf_hex_array()
@@ -214,7 +226,49 @@ static void handle_token_sent_curve_pool(ethPluginProvideParameter_t *msg, conte
                 PRINTF("Param not supported\n");
                 break;
         }
-    } else if (is_oeth) {
+    } if (is_pay_pool) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                // printf_hex_array()
+                memcpy(context->token_sent, PYUSD_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_sent, USDC_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    } if (is_frax_pyusd) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                // printf_hex_array()
+                memcpy(context->token_sent, FRAX_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_sent, PYUSD_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    } if (is_tri_crypto) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                // printf_hex_array()
+                memcpy(context->token_sent, USDC_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_sent, WBTC_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 2:
+                memcpy(context->token_sent, WETH_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    }  else if (is_oeth) {
         switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
             case 0:
                 // printf_hex_array()
@@ -251,7 +305,19 @@ static void handle_token_received_curve_pool(ethPluginProvideParameter_t *msg, c
                           msg->pluginSharedRO->txContent->destination,
                           ADDRESS_LENGTH) == 0;
 
-    bool is_fraxSdai = memcmp(CURVE_FRAXSDAI_POOL_ADDRESS,
+    bool is_frax_sdai = memcmp(CURVE_FRAXSDAI_POOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+    
+    bool is_pay_pool = memcmp(PAYPOOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+
+    bool is_frax_pyusd = memcmp(FRAX_PYUSD_POOL_ADDRESS,
+                          msg->pluginSharedRO->txContent->destination,
+                          ADDRESS_LENGTH) == 0;
+    
+     bool is_tri_crypto = memcmp(TRI_CRYPTO_USDC_ADDRESS,
                           msg->pluginSharedRO->txContent->destination,
                           ADDRESS_LENGTH) == 0;
     
@@ -285,7 +351,7 @@ static void handle_token_received_curve_pool(ethPluginProvideParameter_t *msg, c
                 PRINTF("Param not supported\n");
                 break;
         } 
-    } if (is_fraxSdai) {
+    } if (is_frax_sdai) {
         switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
             case 0:
                 // printf_hex_array()
@@ -293,6 +359,48 @@ static void handle_token_received_curve_pool(ethPluginProvideParameter_t *msg, c
                 break;
             case 1:
                 memcpy(context->token_received, SDAI_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    } if (is_pay_pool) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                // printf_hex_array()
+                memcpy(context->token_received, PYUSD_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_received, USDC_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    } if (is_frax_pyusd) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                // printf_hex_array()
+                memcpy(context->token_received, FRAX_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_received, PYUSD_ADDRESS, ADDRESS_LENGTH);
+                break;
+            default:
+                PRINTF("Param not supported\n");
+                break;
+        }
+    } if (is_tri_crypto) {
+        switch (U2BE(msg->parameter, PARAMETER_LENGTH - 2)) {
+            case 0:
+                // printf_hex_array()
+                memcpy(context->token_received, USDC_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 1:
+                memcpy(context->token_received, WBTC_ADDRESS, ADDRESS_LENGTH);
+                break;
+            case 2:
+                memcpy(context->token_received, WETH_ADDRESS, ADDRESS_LENGTH);
                 break;
             default:
                 PRINTF("Param not supported\n");
@@ -441,6 +549,7 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
             handle_wrap_unwrap_WETH(msg, context);
             break;
         case CURVE_EXCHANGE:
+        case EXCHANGE_UNDERLYING:
             PRINTF("Running Curve....\n");
             handle_curve_swap(msg, context);
             break;

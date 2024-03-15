@@ -35,8 +35,9 @@
     X(WRAP, 0xd0e30db0 )                                 \
     X(UNWRAP, 0x2e1a7d4d)                                 \
     X(CURVE_EXCHANGE, 0x3df02124)                          \
-    X(BATCH_SWAP, 0x945bcec9)                               \
-    X(TRANSFER, 0xa9059cbb)                                  \
+    X(EXCHANGE_UNDERLYING, 0x65b2489b)                      \
+    X(BATCH_SWAP, 0x945bcec9)                                \
+    X(TRANSFER, 0xa9059cbb)                                   \
 
 // This enum will be automatically expanded to hold all selector names.
 typedef enum selector_e {
@@ -165,6 +166,8 @@ extern const uint8_t CURVE_FRAXSDAI_POOL_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t SDAI_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t PAYPOOL_ADDRESS[ADDRESS_LENGTH];
 extern const uint8_t PYUSD_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t FRAX_PYUSD_POOL_ADDRESS[ADDRESS_LENGTH];
+extern const uint8_t TRI_CRYPTO_USDC_ADDRESS[ADDRESS_LENGTH];
 
 
 
@@ -238,6 +241,7 @@ static inline const char *get_ticker_for_address(uint8_t address[ADDRESS_LENGTH]
     } else if (ADDRESS_IS_SDAI(address)) {
         return SDAI_TICKER; 
     } else if (ADDRESS_IS_PYUSD(address)) {
+        PRINTF("Address is PYUSD");
         return PYUSD_TICKER; 
     }
     else {
