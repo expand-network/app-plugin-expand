@@ -32,6 +32,7 @@ static bool set_send_ui(ethQueryContractUI_t *msg, context_t *context) {
             break;
         case SWAP_EXACT_TOKENS_FOR_ETH:
         case SWAP_EXACT_TOKENS_FOR_TOKENS:
+        case UNISWAPV3_SWAP:
              strlcpy(context->ticker_sent, 
                      get_ticker_for_address(context->token_sent), 
                      sizeof(context->ticker_sent));
@@ -111,6 +112,7 @@ static bool set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) 
              break;
         case SWAP_EXACT_TOKENS_FOR_ETH:
         case SWAP_EXACT_TOKENS_FOR_TOKENS:
+        case UNISWAPV3_SWAP:
             //  strlcpy(context->amount_received,msg->pluginSharedRO->txContent->value.value,sizeof(context->amount_received));
             //  token_amount_size = msg->pluginSharedRO->txContent->value.length;
             if(context->selectorIndex == SWAP_EXACT_TOKENS_FOR_ETH) {

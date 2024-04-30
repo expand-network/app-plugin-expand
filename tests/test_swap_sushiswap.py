@@ -15,24 +15,24 @@
 # ABIS_FOLDER = "%s/abis" % (os.path.dirname(__file__))
 # PLUGIN_NAME = get_appname_from_makefile()
 
-# with open("%s/0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D.abi.json" % (ABIS_FOLDER)) as file:
+# with open("%s/ b0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D.abi.json" % (ABIS_FOLDER)) as file:
 #     contract = Web3().eth.contract(
 #         abi=json.load(file),
 #         # Get address from filename
-#         address=bytes.fromhex(os.path.basename(file.name).split(".")[0].split("x")[-1])
+#         address=bytes.fromhex("d9e1cE17f2641f24aE83637ab66a2cca9C378B9F")
 #     )
 
 
 # # EDIT THIS: build your own test
-# def test_swap_exact_eth_for_token(backend, firmware, navigator, test_name):
+# def test_swap_sushi(backend, firmware, navigator, test_name):
 #     client = EthAppClient(backend)
 #     # print(client)
 
 #     data = contract.encodeABI("swapExactETHForTokens", [
-#         400000000,
+#         3000000000000000,
 #         [
 #             bytes.fromhex("C02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
-#             bytes.fromhex("A0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48")
+#             bytes.fromhex("6B175474E89094C44Da98b954EedeAC495271d0F")
 #         ],
 #         bytes.fromhex("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045"),
 #         int(datetime.datetime(2024, 12, 25, 0, 0).timestamp())
@@ -54,7 +54,7 @@
 #              "maxPriorityFeePerGas": Web3.to_wei(1.5, "gwei"),
 #              "gas": 173290,
 #              "to": contract.address,
-#              "value": Web3.to_wei(2, "ether"),
+#              "value": Web3.to_wei(0.000001, "ether"),
 #              "chainId": ChainId.ETH,
 #              "data": data
 #          }):

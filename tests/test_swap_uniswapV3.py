@@ -18,26 +18,24 @@ ROOT_SCREENSHOT_PATH = Path(__file__).parent
 ABIS_FOLDER = "%s/abis" % (os.path.dirname(__file__))
 PLUGIN_NAME = get_appname_from_makefile()
 
-with open("%s/0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D.abi.json" % (ABIS_FOLDER)) as file:
+with open("%s/uniswapV3.json" % (ABIS_FOLDER)) as file:
     contract = Web3().eth.contract(
         abi=json.load(file),
         # Get address from filename
-        address=bytes.fromhex(os.path.basename(file.name).split(".")[0].split("x")[-1])
+        address= bytes.fromhex("68b3465833fb72a70ecdf485e0e4c7bd8665fc45")
     )
 
-def test_swap_sushiswap(backend, firmware, navigator, test_name):
+def test_uniswap(backend, firmware, navigator, test_name):
     client = EthAppClient(backend)
 
     data = contract.encodeABI("swapExactTokensForTokens", [
-        400000000000000000000,
-        100000000000000000000,
+        40000000000,
+        10000000000,
         [
             bytes.fromhex("A0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"),
             bytes.fromhex("6B175474E89094C44Da98b954EedeAC495271d0F")
-
         ],
-        bytes.fromhex("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045"),
-        int(datetime.datetime(2025, 12, 25, 0, 0).timestamp())
+        bytes.fromhex("d8dA6BF26964aF9D7eEd9e03E53415D37aA96045")
     ])
     print("data: ", data )
     # return

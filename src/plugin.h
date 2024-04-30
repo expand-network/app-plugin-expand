@@ -38,6 +38,7 @@
     X(EXCHANGE_UNDERLYING, 0x65b2489b)                      \
     X(BATCH_SWAP, 0x945bcec9)                                \
     X(TRANSFER, 0xa9059cbb)                                   \
+    X(UNISWAPV3_SWAP, 0x472b43f3)                              \
 
 // This enum will be automatically expanded to hold all selector names.
 typedef enum selector_e {

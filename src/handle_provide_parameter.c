@@ -28,6 +28,7 @@ static void handle_swap_exact_eth_for_tokens(ethPluginProvideParameter_t *msg, c
             break;
         case PATH_LENGTH:
             context->offset = msg->parameterOffset - SELECTOR_SIZE + PARAMETER_LENGTH * 2;
+            PRINTF("Path Length is: %d\n", context->offset);
             context->go_to_offset = true;
             context->next_param = TOKEN_RECEIVED;
             break;
@@ -74,18 +75,16 @@ static void handle_swap_exact_tokens_for_eth (ethPluginProvideParameter_t *msg, 
             context->go_to_offset = true;
             break;
         case PATH_LENGTH:
-            // context->offset = msg->parameterOffset - SELECTOR_SIZE + PARAMETER_LENGTH;
+            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
+            PRINTF("Path Length is: %d\n", context->offset);
             // context->go_to_offset = true;
-            // context->skip += 1;
+            context->skip += (context->offset - 2);
             context->next_param = TOKEN_SENT;
             break;
         case TOKEN_SENT:
             copy_address(context->token_sent, msg->parameter, sizeof(context->token_sent));
             context->next_param = TOKEN_RECEIVED;
             printf_hex_array("TOKEN_SENT: ", ADDRESS_LENGTH, context->token_sent);
-            if(context->selectorIndex == SWAP_EXACT_TOKENS_FOR_TOKENS){
-                context->skip += 1;
-            }
             break;
         case TOKEN_RECEIVED:  // path[1] -> contract address of token received
             copy_address(context->token_received, msg->parameter, sizeof(context->token_received));
@@ -517,10 +516,10 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
     // We use `%.*H`: it's a utility function to print bytes. You first give
     // the number of bytes you wish to print (in this case, `PARAMETER_LENGTH`) and then
     // the address (here `msg->parameter`).
-    // PRINTF("expand plugin provide parameter: offset %d\nBytes: %.*H\n",
-    //        msg->parameterOffset,
-    //        PARAMETER_LENGTH,
-    //        msg->parameter);
+    PRINTF("expand plugin provide parameter: offset %d\nBytes: %.*H\n",
+           msg->parameterOffset,
+           PARAMETER_LENGTH,
+           msg->parameter);
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 
@@ -537,6 +536,7 @@ void handle_provide_parameter(ethPluginProvideParameter_t *msg) {
             break;
         case SWAP_EXACT_TOKENS_FOR_ETH:
         case SWAP_EXACT_TOKENS_FOR_TOKENS:
+        case UNISWAPV3_SWAP:
             handle_swap_exact_tokens_for_eth(msg, context);
             break;
         case APPROVE:

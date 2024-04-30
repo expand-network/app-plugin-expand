@@ -43,6 +43,7 @@ void handle_init_contract(ethPluginInitContract_t *msg) {
             break;
         case SWAP_EXACT_TOKENS_FOR_ETH:
         case SWAP_EXACT_TOKENS_FOR_TOKENS:
+        case UNISWAPV3_SWAP:
         case UNWRAP:
             context->next_param = AMOUNT_SENT;
             break;

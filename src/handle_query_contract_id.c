@@ -18,7 +18,7 @@ void handle_query_contract_id(ethQueryContractID_t *msg) {
     //     strlcpy(msg->version, "Swap", msg->versionLength);
     //     msg->result = ETH_PLUGIN_RESULT_OK;
     // }  
-    else if (context->selectorIndex == SWAP_EXACT_TOKENS_FOR_TOKENS || context->selectorIndex == BATCH_SWAP) {
+    else if (context->selectorIndex == SWAP_EXACT_TOKENS_FOR_TOKENS || context->selectorIndex == BATCH_SWAP || context->selectorIndex == UNISWAPV3_SWAP) {
         strlcpy(msg->version, "Swap", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
     } else if(context->selectorIndex == APPROVE) {
